@@ -20,6 +20,8 @@ class Control extends BaseColumn
 	{
 		parent::__construct();
 
+	        $this->label(trans('admin::lang.table.column.control'));
+
 		$this->orderable(false);
 	}
 
