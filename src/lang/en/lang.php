@@ -60,6 +60,9 @@ return [
 			'previous' => '&larr;',
 			'next'     => '&rarr;',
 			'last'     => 'Last'
+		],
+		'column' => [
+			'control' => 'Actions'
 		]
 	],
 	'select'   => [
