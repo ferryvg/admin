@@ -165,6 +165,16 @@ class DisplayTable implements Renderable, DisplayInterface
 		}
 	}
 
+	public function activeFilters($filters = null)
+	{
+		if (is_null($filters))
+		{
+			return $this->activeFilters;
+		}
+		$this->activeFilters = $filters;
+		return $this;
+	}
+
 	protected function modifyQuery($query)
 	{
 		foreach ($this->scope() as $scope)
