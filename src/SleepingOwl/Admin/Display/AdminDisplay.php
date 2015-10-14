@@ -9,6 +9,7 @@ use SleepingOwl\Admin\Base\AliasBinder;
  * @method static \SleepingOwl\Admin\Display\DisplayTabbed tabbed()
  * @method static \SleepingOwl\Admin\Display\DisplayTable table()
  * @method static \SleepingOwl\Admin\Display\DisplayTree tree()
+ * @method static \SleepingOwl\Admin\Display\DisplayMultiDisplay multiDisplay()
  */
 class AdminDisplay extends AliasBinder
 {

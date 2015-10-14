@@ -14,6 +14,7 @@ class DisplayServiceProvider extends ServiceProvider
 		AdminDisplay::register('tabbed', 'SleepingOwl\Admin\Display\DisplayTabbed');
 		AdminDisplay::register('table', 'SleepingOwl\Admin\Display\DisplayTable');
 		AdminDisplay::register('tree', 'SleepingOwl\Admin\Display\DisplayTree');
+		AdminDisplay::register('multiDisplay', 'SleepingOwl\Admin\Display\DisplayMultiDisplay');
 	}
 
 }
