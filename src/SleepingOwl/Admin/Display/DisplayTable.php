@@ -10,22 +10,65 @@ use SleepingOwl\Admin\Interfaces\ColumnInterface;
 use SleepingOwl\Admin\Interfaces\DisplayInterface;
 use SleepingOwl\Admin\Repository\BaseRepository;
 
+/**
+ * Class DisplayTable
+ * @package SleepingOwl\Admin\Display
+ */
 class DisplayTable implements Renderable, DisplayInterface
 {
 
+	/**
+	 * @var string
+     */
 	protected $view = 'table';
+	/**
+	 * @var
+     */
 	protected $class;
+	/**
+	 * @var array
+     */
 	protected $columns = [];
+	/**
+	 * @var array
+     */
 	protected $with = [];
+	/**
+	 * @var BaseRepository
+     */
 	protected $repository;
+	/**
+	 * @var
+     */
 	protected $apply;
+	/**
+	 * @var array
+     */
 	protected $scopes = [];
+	/**
+	 * @var array
+     */
 	protected $filters = [];
+	/**
+	 * @var array
+     */
 	protected $activeFilters = [];
+	/**
+	 * @var bool
+     */
 	protected $controlActive = true;
+	/**
+	 * @var array
+     */
 	protected $parameters = [];
+	/**
+	 * @var array
+     */
 	protected $actions = [];
 
+	/**
+	 * @param string $class
+     */
 	public function setClass($class)
 	{
 		if (is_null($this->class))
@@ -34,6 +77,10 @@ class DisplayTable implements Renderable, DisplayInterface
 		}
 	}
 
+	/**
+	 * @param null $columns
+	 * @return $this|array
+     */
 	public function columns($columns = null)
 	{
 		if (is_null($columns))
@@ -44,6 +91,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @return $this|array|DisplayTable
+     */
 	public function allColumns()
 	{
 		$columns = $this->columns();
@@ -54,6 +104,10 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $columns;
 	}
 
+	/**
+	 * @param null $with
+	 * @return $this|array
+     */
 	public function with($with = null)
 	{
 		if (is_null($with))
@@ -68,6 +122,10 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @param null $filters
+	 * @return $this|array
+     */
 	public function filters($filters = null)
 	{
 		if (is_null($filters))
@@ -78,6 +136,10 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @param null $apply
+	 * @return $this
+     */
 	public function apply($apply = null)
 	{
 		if (is_null($apply))
@@ -88,6 +150,10 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @param null $scope
+	 * @return $this|array
+     */
 	public function scope($scope = null)
 	{
 		if (is_null($scope))
@@ -98,6 +164,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @return string
+     */
 	public function title()
 	{
 		$titles = array_map(function ($filter)
@@ -107,6 +176,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		return implode(', ', $titles);
 	}
 
+	/**
+	 *
+     */
 	public function initialize()
 	{
 		$this->repository = new BaseRepository($this->class);
@@ -123,6 +195,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		}
 	}
 
+	/**
+	 *
+     */
 	protected function initializeAction()
 	{
 		$action = Input::get('_action');
@@ -152,6 +227,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		}
 	}
 
+	/**
+	 *
+     */
 	protected function initializeFilters()
 	{
 		$this->initializeAction();
@@ -165,6 +243,10 @@ class DisplayTable implements Renderable, DisplayInterface
 		}
 	}
 
+	/**
+	 * @param null $filters
+	 * @return $this|array
+     */
 	public function activeFilters($filters = null)
 	{
 		if (is_null($filters))
@@ -175,6 +257,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @param $query
+     */
 	protected function modifyQuery($query)
 	{
 		foreach ($this->scope() as $scope)
@@ -199,6 +284,10 @@ class DisplayTable implements Renderable, DisplayInterface
 		}
 	}
 
+	/**
+	 * @param null $actions
+	 * @return $this|array
+     */
 	public function actions($actions = null)
 	{
 		if (is_null($actions))
@@ -216,6 +305,10 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @param null $controlActive
+	 * @return $this|bool
+     */
 	public function controlActive($controlActive = null)
 	{
 		if (is_null($controlActive))
@@ -226,23 +319,36 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @return $this
+     */
 	public function enableControls()
 	{
 		$this->controlActive(true);
 		return $this;
 	}
 
+	/**
+	 * @return $this
+     */
 	public function disableControls()
 	{
 		$this->controlActive(false);
 		return $this;
 	}
 
+	/**
+	 * @return \SleepingOwl\Admin\Model\ModelConfiguration
+     */
 	public function model()
 	{
 		return Admin::model($this->class);
 	}
 
+	/**
+	 * @param null $parameters
+	 * @return $this|array
+     */
 	public function parameters($parameters = null)
 	{
 		if (is_null($parameters))
@@ -253,6 +359,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		return $this;
 	}
 
+	/**
+	 * @return array
+     */
 	protected function getParams()
 	{
 		return [
@@ -264,6 +373,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		];
 	}
 
+	/**
+	 * @return string
+     */
 	public function render()
 	{
 		$query = $this->repository->query();
@@ -273,6 +385,9 @@ class DisplayTable implements Renderable, DisplayInterface
 		return view(AdminTemplate::view('display.' . $this->view), $params)->render();
 	}
 
+	/**
+	 * @return string
+     */
 	function __toString()
 	{
 		try
