@@ -53,8 +53,11 @@ abstract class BaseColumn implements Renderable, ColumnInterface
 	 * @param string $title
 	 * @return $this
 	 */
-	public function label($title)
+	public function label($title = null)
 	{
+		if ($title == null) {
+			return $this->header->title();
+		}
 		$this->header->title($title);
 		return $this;
 	}
