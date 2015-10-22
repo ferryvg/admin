@@ -12,9 +12,17 @@ use Redirect;
 use SleepingOwl\Admin\Interfaces\FormInterface;
 use View;
 
+/**
+ * Class AdminController
+ * @package SleepingOwl\Admin\Http\Controllers
+ */
 class AdminController extends Controller
 {
 
+	/**
+	 * @param $model
+	 * @param $action
+     */
 	protected function check_acl($model,$action){
 		$model_undercase_name = strtolower(class_basename($model->getClass()));
 		if ($model->aclsAreActive() && Gate::denies($model_undercase_name . '-' . $action)) {
@@ -23,12 +31,20 @@ class AdminController extends Controller
 		}
 	}
 
+	/**
+	 * @param $model
+	 * @return View
+     */
 	public function getDisplay($model)
 	{
 		$this->check_acl($model,'retrieve');
 		return $this->render($model->title(), $model->display());
 	}
 
+	/**
+	 * @param $model
+	 * @return View
+     */
 	public function getCreate($model)
 	{
 		$this->check_acl($model,'create');
@@ -40,6 +56,10 @@ class AdminController extends Controller
 		return $this->render($model->title(), $create);
 	}
 
+	/**
+	 * @param $model
+	 * @return \Illuminate\Http\RedirectResponse
+     */
 	public function postStore($model)
 	{
 		$this->check_acl($model,'store');
@@ -61,6 +81,11 @@ class AdminController extends Controller
 		return Redirect::to(Input::get('_redirectBack', $model->displayUrl()));
 	}
 
+	/**
+	 * @param $model
+	 * @param $id
+	 * @return View
+     */
 	public function getEdit($model, $id)
 	{
 		$this->check_acl($model,'edit');
@@ -72,6 +97,11 @@ class AdminController extends Controller
 		return $this->render($model->title(), $edit);
 	}
 
+	/**
+	 * @param $model
+	 * @param $id
+	 * @return View
+     */
 	public function getShow($model, $id)
 	{
 		$this->check_acl($model,'show');
@@ -83,6 +113,11 @@ class AdminController extends Controller
 		return $this->render($model->title(), $show);
 	}
 
+	/**
+	 * @param $model
+	 * @param $id
+	 * @return \Illuminate\Http\RedirectResponse
+     */
 	public function postUpdate($model, $id)
 	{
 		$this->check_acl($model,'update');
@@ -104,6 +139,11 @@ class AdminController extends Controller
 		return Redirect::to(Input::get('_redirectBack', $model->displayUrl()));
 	}
 
+	/**
+	 * @param $model
+	 * @param $id
+	 * @return \Illuminate\Http\RedirectResponse
+     */
 	public function postDestroy($model, $id)
 	{
 		$this->check_acl($model,'destroy');
@@ -116,6 +156,28 @@ class AdminController extends Controller
 		return Redirect::back();
 	}
 
+	/**
+	 * @param $model
+	 * @param $id
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function postForceDestroy($model, $id)
+	{
+		$this->check_acl($model,'destroy');
+		$delete = $model->forceDelete($id);
+		if (is_null($delete))
+		{
+			abort(404);
+		}
+		$model->repository()->forceDelete($id);
+		return Redirect::back();
+	}
+
+	/**
+	 * @param $model
+	 * @param $id
+	 * @return \Illuminate\Http\RedirectResponse
+     */
 	public function postRestore($model, $id)
 	{
 		$this->check_acl($model,'update');
@@ -128,6 +190,11 @@ class AdminController extends Controller
 		return Redirect::back();
 	}
 
+	/**
+	 * @param $title
+	 * @param $content
+	 * @return View
+     */
 	public function render($title, $content)
 	{
 		if ($content instanceof Renderable)
@@ -140,6 +207,9 @@ class AdminController extends Controller
 		]);
 	}
 
+	/**
+	 * @return Response
+     */
 	public function getLang()
 	{
 		$lang = trans('admin::lang');
@@ -165,6 +235,10 @@ class AdminController extends Controller
 		return $this->cacheResponse($response);
 	}
 
+	/**
+	 * @param Response $response
+	 * @return Response
+     */
 	protected function cacheResponse(Response $response)
 	{
 		$response->setSharedMaxAge(31536000);
@@ -174,6 +248,9 @@ class AdminController extends Controller
 		return $response;
 	}
 
+	/**
+	 *
+     */
 	public function getWildcard()
 	{
 		abort(404);

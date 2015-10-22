@@ -59,6 +59,11 @@ Route::group([
 		'uses' => 'AdminController@postDestroy',
 	]);
 
+	Route::delete('{adminModel}/{adminModelId}/force', [
+		'as'   => 'admin.model.forceDestroy',
+		'uses' => 'AdminController@postForceDestroy',
+	]);
+
 	Route::post('{adminModel}/{adminModelId}/restore', [
 		'as'   => 'admin.model.restore',
 		'uses' => 'AdminController@postRestore',

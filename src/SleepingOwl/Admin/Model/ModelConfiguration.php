@@ -8,22 +8,66 @@ use SleepingOwl\Admin\Interfaces\FormInterface;
 use SleepingOwl\Admin\Interfaces\ShowInterface;
 use SleepingOwl\Admin\Repository\BaseRepository;
 
+/**
+ * Class ModelConfiguration
+ * @package SleepingOwl\Admin\Model
+ */
 class ModelConfiguration
 {
 
+	/**
+	 * @var
+     */
 	protected $class;
 
+	/**
+	 * @var
+     */
 	protected $alias;
+	/**
+	 * @var array
+     */
 	protected $alt_aliases = [];
+	/**
+	 * @var
+     */
 	protected $title;
+	/**
+	 * @var
+     */
 	protected $display;
+	/**
+	 * @var
+     */
 	protected $show;
+	/**
+	 * @var
+     */
 	protected $create;
+	/**
+	 * @var
+     */
 	protected $edit;
+	/**
+	 * @var bool
+     */
 	protected $delete = true;
+	/**
+	 * @var bool
+	 */
+	protected $forceDelete = true;
+	/**
+	 * @var bool
+     */
 	protected $restore = true;
+	/**
+	 * @var bool
+     */
 	protected $acls_are_active = false;
 
+	/**
+	 * @param $class
+     */
 	function __construct($class)
 	{
 		$this->class = $class;
@@ -40,17 +84,27 @@ class ModelConfiguration
 		return $this->class;
 	}
 
+	/**
+	 * @return BaseRepository
+     */
 	public function repository()
 	{
 		return new BaseRepository($this->class);
 	}
 
+	/**
+	 *
+     */
 	protected function setDefaultAlias()
 	{
 		$alias = Str::snake(Str::plural(class_basename($this->class)));
 		$this->alias($alias);
 	}
 
+	/**
+	 * @param null $alias
+	 * @return $this
+     */
 	public function alias($alias = null)
 	{
 		if (func_num_args() == 0)
@@ -77,6 +131,10 @@ class ModelConfiguration
 		$this->acls_are_active = $acls_are_active;
 	}
 
+	/**
+	 * @param null $active
+	 * @return $this|bool
+     */
 	public function active_acls($active = null){
 		if ($active == null) {
 			return $this->acls_are_active;
@@ -119,6 +177,10 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param null $title
+	 * @return $this
+     */
 	public function title($title = null)
 	{
 		if (func_num_args() == 0)
@@ -129,6 +191,10 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param null $create
+	 * @return $this|mixed|null
+     */
 	public function create($create = null)
 	{
 		if (func_num_args() == 0)
@@ -139,6 +205,10 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param null $show
+	 * @return $this|mixed|null
+     */
 	public function show($show = null)
 	{
 		if (func_num_args() == 0 || is_numeric($show))
@@ -149,6 +219,10 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param null $edit
+	 * @return $this|mixed|null
+     */
 	public function edit($edit = null)
 	{
 		if ((func_num_args() == 0) || is_numeric($edit))
@@ -159,6 +233,10 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param $callback
+	 * @return $this
+     */
 	public function createAndEdit($callback)
 	{
 		$this->create($callback);
@@ -166,6 +244,10 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param $callback
+	 * @return $this
+     */
 	public function createAndEditAndShow($callback)
 	{
 		$this->create($callback);
@@ -174,6 +256,10 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param null $delete
+	 * @return $this|bool|mixed
+     */
 	public function delete($delete = null)
 	{
 		if ((func_num_args() == 0) || is_numeric($delete))
@@ -184,6 +270,24 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param null $forceDelete
+	 * @return $this|bool|mixed
+	 */
+	public function forceDelete($forceDelete = null)
+	{
+		if ((func_num_args() == 0) || is_numeric($forceDelete))
+		{
+			return $this->getForceDelete($forceDelete);
+		}
+		$this->forceDelete = $forceDelete;
+		return $this;
+	}
+
+	/**
+	 * @param null $restore
+	 * @return $this|bool|mixed
+     */
 	public function restore($restore = null)
 	{
 		if ((func_num_args() == 0) || is_numeric($restore))
@@ -194,6 +298,10 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @param null $display
+	 * @return $this|mixed
+     */
 	public function display($display = null)
 	{
 		if (func_num_args() == 0)
@@ -204,6 +312,9 @@ class ModelConfiguration
 		return $this;
 	}
 
+	/**
+	 * @return mixed
+     */
 	protected function getDisplay()
 	{
 		$display = call_user_func($this->display);
@@ -215,6 +326,9 @@ class ModelConfiguration
 		return $display;
 	}
 
+	/**
+	 * @return mixed|null
+     */
 	protected function getShow()
 	{
 		if (is_null($this->show))
@@ -234,6 +348,9 @@ class ModelConfiguration
 		return $show;
 	}
 
+	/**
+	 * @return mixed|null
+     */
 	protected function getCreate()
 	{
 		if (is_null($this->create))
@@ -253,6 +370,10 @@ class ModelConfiguration
 		return $create;
 	}
 
+	/**
+	 * @param $id
+	 * @return mixed|null
+     */
 	protected function getEdit($id)
 	{
 		if (is_null($this->edit))
@@ -268,6 +389,10 @@ class ModelConfiguration
 		return $edit;
 	}
 
+	/**
+	 * @param $id
+	 * @return $this|mixed|null|ModelConfiguration
+     */
 	public function fullEdit($id)
 	{
 		$edit = $this->edit($id);
@@ -279,6 +404,10 @@ class ModelConfiguration
 		return $edit;
 	}
 
+	/**
+	 * @param $id
+	 * @return $this|mixed|null|ModelConfiguration
+     */
 	public function fullShow($id)
 	{
 		$show = $this->show($id);
@@ -289,6 +418,10 @@ class ModelConfiguration
 		return $show;
 	}
 
+	/**
+	 * @param $id
+	 * @return bool|mixed
+     */
 	protected function getDelete($id)
 	{
 		if (is_callable($this->delete))
@@ -298,6 +431,23 @@ class ModelConfiguration
 		return $this->delete;
 	}
 
+	/**
+	 * @param $id
+	 * @return bool|mixed
+	 */
+	protected function getForceDelete($id)
+	{
+		if (is_callable($this->foceDelete))
+		{
+			return call_user_func($this->foceDelete, $id);
+		}
+		return $this->foceDelete;
+	}
+
+	/**
+	 * @param $id
+	 * @return bool|mixed
+     */
 	protected function getRestore($id)
 	{
 		if (is_callable($this->restore))
@@ -307,43 +457,74 @@ class ModelConfiguration
 		return $this->restore;
 	}
 
+	/**
+	 * @param array $parameters
+	 * @return string
+     */
 	public function displayUrl($parameters = [])
 	{
 		array_unshift($parameters, $this->alias());
 		return route('admin.model', $parameters);
 	}
 
+	/**
+	 * @param $id
+	 * @return string
+     */
 	public function showUrl($id)
 	{
 		return route('admin.model.show', [$this->alias(), $id]);
 	}
 
+	/**
+	 * @param array $parameters
+	 * @return string
+     */
 	public function createUrl($parameters = [])
 	{
 		array_unshift($parameters, $this->alias());
 		return route('admin.model.create', $parameters);
 	}
 
+	/**
+	 * @return string
+     */
 	public function storeUrl()
 	{
 		return route('admin.model.store', $this->alias());
 	}
 
+	/**
+	 * @param $id
+	 * @return string
+     */
 	public function editUrl($id)
 	{
 		return route('admin.model.edit', [$this->alias(), $id]);
 	}
 
+	/**
+	 * @param $id
+	 * @return string
+     */
 	public function updateUrl($id)
 	{
 		return route('admin.model.update', [$this->alias(), $id]);
 	}
 
+	/**
+	 * @param $id
+	 * @return string
+     */
 	public function deleteUrl($id)
 	{
 		return route('admin.model.destroy', [$this->alias(), $id]);
 	}
 
+	/**
+	 * @param $id
+	 * @return string
+     */
 	public function restoreUrl($id)
 	{
 		return route('admin.model.restore', [$this->alias(), $id]);

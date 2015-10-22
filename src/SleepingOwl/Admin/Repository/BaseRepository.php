@@ -98,6 +98,15 @@ class BaseRepository
 	}
 
 	/**
+	 * Force Delete model instance by id
+	 * @param int $id
+	 */
+	public function forceDelete($id)
+	{
+		$this->find($id)->forceDelete();
+	}
+
+	/**
 	 * Restore model instance by id
 	 * @param int $id
 	 */
