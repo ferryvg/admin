@@ -1,11 +1,15 @@
-<?php namespace SleepingOwl\Admin\Repository;
+<?php
+
+namespace SleepingOwl\Admin\Repository;
 
 use Cache;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Schema;
 
-class BaseRepository
+/**
+ * Class BaseRepository
+ * @package SleepingOwl\Admin\Repository
+ */
+class BaseRepository implements BaseRepositoryInterface
 {
 
 	/**
