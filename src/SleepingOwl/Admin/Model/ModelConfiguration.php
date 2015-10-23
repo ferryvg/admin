@@ -437,11 +437,11 @@ class ModelConfiguration
 	 */
 	protected function getForceDelete($id)
 	{
-		if (is_callable($this->foceDelete))
+		if (is_callable($this->forceDelete))
 		{
-			return call_user_func($this->foceDelete, $id);
+			return call_user_func($this->forceDelete, $id);
 		}
-		return $this->foceDelete;
+		return $this->forceDelete;
 	}
 
 	/**
@@ -519,6 +519,15 @@ class ModelConfiguration
 	public function deleteUrl($id)
 	{
 		return route('admin.model.destroy', [$this->alias(), $id]);
+	}
+
+    /**
+	 * @param $id
+	 * @return string
+     */
+	public function forceDeleteUrl($id)
+	{
+		return route('admin.model.forceDestroy', [$this->alias(), $id]);
 	}
 
 	/**
