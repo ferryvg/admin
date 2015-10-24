@@ -1,4 +1,6 @@
-<?php namespace SleepingOwl\Admin\Http\Controllers;
+<?php
+
+namespace SleepingOwl\Admin\Http\Controllers;
 
 use AdminTemplate;
 use App;
@@ -6,10 +8,10 @@ use Gate;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Str;
 use Input;
 use Redirect;
 use SleepingOwl\Admin\Interfaces\FormInterface;
+use SleepingOwl\Admin\Model\ModelConfiguration;
 use View;
 
 /**
@@ -18,21 +20,49 @@ use View;
  */
 class AdminController extends Controller
 {
-
 	/**
-	 * @param $model
+	 * Check acl
+	 * @param ModelConfiguration $model
 	 * @param $action
+	 * @param null $id
      */
-	protected function check_acl($model,$action){
+	protected function check_acl($model, $action, $id=null){
+		if ( ! $model->aclsAreActive()) return;
 		$model_undercase_name = strtolower(class_basename($model->getClass()));
-		if ($model->aclsAreActive() && Gate::denies($model_undercase_name . '-' . $action)) {
+		if (Gate::denies($model_undercase_name . '-' . $action)) {
 			View::share('permission', $model_undercase_name.'-' . $action);
 			abort(403);
 		}
+
+		if ($id != null) {
+			$class = $model->getClass();
+			if ($this->model_uses_soft_deletes($class)) {
+				$laravel_model = $class::withTrashed()->findOrFail($id);
+			} else {
+				$laravel_model = $class::findOrFail($id);
+			}
+			if (Gate::denies($action,$laravel_model)) {
+				View::share('permission', "You don't have permissions to acces object " . $model_undercase_name . ' with id: ' . $id);
+				abort(403);
+			}
+		}
+	}
+
+
+	/**
+	 * Check if model uses trait soft Deleted
+	 * @param $model
+	 * @return bool
+     */
+	private function model_uses_soft_deletes($model){
+		if (method_exists($model,'forceDelete') && method_exists($model,'restore') && method_exists($model,'trashed')) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @return View
      */
 	public function getDisplay($model)
@@ -42,7 +72,7 @@ class AdminController extends Controller
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @return View
      */
 	public function getCreate($model)
@@ -57,7 +87,7 @@ class AdminController extends Controller
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @return \Illuminate\Http\RedirectResponse
      */
 	public function postStore($model)
@@ -82,13 +112,13 @@ class AdminController extends Controller
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return View
      */
 	public function getEdit($model, $id)
 	{
-		$this->check_acl($model,'edit');
+		$this->check_acl($model,'edit',$id);
 		$edit = $model->fullEdit($id);
 		if (is_null($edit))
 		{
@@ -98,13 +128,13 @@ class AdminController extends Controller
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return View
      */
 	public function getShow($model, $id)
 	{
-		$this->check_acl($model,'show');
+		$this->check_acl($model,'show',$id);
 		$show = $model->fullShow($id);
 		if (is_null($show))
 		{
@@ -114,13 +144,13 @@ class AdminController extends Controller
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return \Illuminate\Http\RedirectResponse
      */
 	public function postUpdate($model, $id)
 	{
-		$this->check_acl($model,'update');
+		$this->check_acl($model,'update',$id);
 		$edit = $model->fullEdit($id);
 		if (is_null($edit))
 		{
@@ -140,13 +170,13 @@ class AdminController extends Controller
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return \Illuminate\Http\RedirectResponse
      */
 	public function postDestroy($model, $id)
 	{
-		$this->check_acl($model,'destroy');
+		$this->check_acl($model,'destroy',$id);
 		$delete = $model->delete($id);
 		if (is_null($delete))
 		{
@@ -157,13 +187,13 @@ class AdminController extends Controller
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function postForceDestroy($model, $id)
 	{
-		$this->check_acl($model,'destroy');
+		$this->check_acl($model,'destroy',$id);
 		$delete = $model->forceDelete($id);
 		if (is_null($delete))
 		{
@@ -174,13 +204,13 @@ class AdminController extends Controller
 	}
 
 	/**
-	 * @param $model
+	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return \Illuminate\Http\RedirectResponse
      */
 	public function postRestore($model, $id)
 	{
-		$this->check_acl($model,'update');
+		$this->check_acl($model,'update', $id);
 		$restore = $model->restore($id);
 		if (is_null($restore))
 		{
