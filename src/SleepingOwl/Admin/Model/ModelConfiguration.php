@@ -1,8 +1,11 @@
-<?php namespace SleepingOwl\Admin\Model;
+<?php
+
+namespace SleepingOwl\Admin\Model;
 
 use Config;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use SleepingOwl\Admin\Http\Controllers\AdminController;
 use SleepingOwl\Admin\Interfaces\DisplayInterface;
 use SleepingOwl\Admin\Interfaces\FormInterface;
 use SleepingOwl\Admin\Interfaces\ShowInterface;
@@ -44,20 +47,52 @@ class ModelConfiguration
 	 * @var
      */
 	protected $create;
+
 	/**
 	 * @var
      */
 	protected $edit;
+
 	/**
-	 * @var bool
+	 * Is Model editable?
+	 * @var boolean|Callable
+	 */
+	protected $editable = null;
+
+    /**
+     * Is Model deletable (soft delete)?
+     * @var boolean|Callable
+     */
+    protected $deletable = null;
+
+    /**
+     * Is Model restorable (after soft delete)?
+     * @var boolean|Callable
+     */
+    protected $restorable = null;
+
+    /**
+     * Is Model forceDeletable (after soft delete)?
+     * @var boolean|Callable
+     */
+    protected $forceDeletable = null;
+
+    /**
+     * Is Model showable?
+     * @var boolean|Callable
+     */
+    protected $showable = null;
+
+	/**
+	 * @var bool|Callable
      */
 	protected $delete = true;
 	/**
-	 * @var bool
+	 * @var bool|Callable
 	 */
 	protected $forceDelete = true;
 	/**
-	 * @var bool
+	 * @var bool|Callable
      */
 	protected $restore = true;
 	/**
@@ -233,7 +268,118 @@ class ModelConfiguration
 		return $this;
 	}
 
-	/**
+    /**
+     * Is editable?
+     * @param null $editable
+     * @param null $id
+     * @return $this|bool|Callable|mixed
+     */
+    public function editable($editable = null, $id = null){
+
+		if ($editable == null) {
+			if (is_callable($this->editable))
+			{
+				return call_user_func($this->editable);
+			}
+			if ($this->editable != null) {
+				return $this->editable;
+			}
+			return (AdminController::checkPermissionAccess($this,'edit') && AdminController::checkPolicyAccess($this,'edit',$id));
+		}
+		$this->editable = $editable;
+		return $this;
+	}
+
+    /**
+     * Is deletable?
+     * @param null $deletable
+     * @param null $id
+     * @return $this|bool|Callable|mixed
+     */
+    public function deletable($deletable = null, $id = null){
+
+        if ($deletable == null) {
+            if (is_callable($this->deletable))
+            {
+                return call_user_func($this->deletable);
+            }
+            if ($this->deletable != null) {
+                return $this->deletable;
+            }
+            return (AdminController::checkPermissionAccess($this,'destroy') && AdminController::checkPolicyAccess($this,'destroy',$id));
+        }
+        $this->deletable = $deletable;
+        return $this;
+    }
+
+    /**
+     * Is restorable?
+     * @param null $restorable
+     * @param null $id
+     * @return $this|bool|Callable|mixed
+     */
+    public function restorable($restorable = null, $id = null){
+
+        if ($restorable == null) {
+            if (is_callable($this->restorable))
+            {
+                return call_user_func($this->restorable);
+            }
+            if ($this->restorable != null) {
+                return $this->restorable;
+            }
+            return (AdminController::checkPermissionAccess($this,'restore') && AdminController::checkPolicyAccess($this,'restore',$id));
+        }
+        $this->restorable = $restorable;
+        return $this;
+    }
+
+    /**
+     * Is forceDeletable?
+     * @param null $forceDeletable
+     * @param null $id
+     * @return $this|bool|Callable|mixed
+     */
+    public function forceDeletable($forceDeletable = null, $id = null){
+
+        if ($forceDeletable == null) {
+            if (is_callable($this->forceDeletable))
+            {
+                return call_user_func($this->forceDeletable);
+            }
+            if ($this->forceDeletable != null) {
+                return $this->forceDeletable;
+            }
+            return (AdminController::checkPermissionAccess($this,'forceDestroy') && AdminController::checkPolicyAccess($this,'forceDestroy',$id));
+        }
+        $this->forceDeletable = $forceDeletable;
+        return $this;
+    }
+
+    /**
+     * Is showable?
+     * @param null $showable
+     * @param null $id
+     * @return $this|bool|Callable|mixed
+     */
+    public function showable($showable = null, $id = null){
+
+        if ($showable == null) {
+            if (is_callable($this->showable))
+            {
+                return call_user_func($this->showable);
+            }
+            if ($this->showable != null) {
+                return $this->showable;
+            }
+            return (AdminController::checkPermissionAccess($this,'retrieve') && AdminController::checkPolicyAccess($this,'retrieve',$id));
+        }
+        $this->showable = $showable;
+        return $this;
+    }
+
+
+    /**
 	 * @param $callback
 	 * @return $this
      */
@@ -326,7 +472,9 @@ class ModelConfiguration
 		return $display;
 	}
 
+
 	/**
+	 * @param $id
 	 * @return mixed|null
      */
 	protected function getShow($id)
