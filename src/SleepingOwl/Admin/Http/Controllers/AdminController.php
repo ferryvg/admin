@@ -21,40 +21,67 @@ use View;
 class AdminController extends Controller
 {
 	/**
-	 * Check acl
+	 * Check acl: permissions and policies
 	 * @param ModelConfiguration $model
 	 * @param $action
 	 * @param null $id
      */
-	protected function check_acl($model, $action, $id=null){
-		if ( ! $model->aclsAreActive()) return;
-		$model_undercase_name = strtolower(class_basename($model->getClass()));
-		if (Gate::denies($model_undercase_name . '-' . $action)) {
-			View::share('permission', $model_undercase_name.'-' . $action);
-			abort(403);
-		}
-
-		if ($id != null) {
-			$class = $model->getClass();
-			if ($this->model_uses_soft_deletes($class)) {
-				$laravel_model = $class::withTrashed()->findOrFail($id);
-			} else {
-				$laravel_model = $class::findOrFail($id);
-			}
-			if (Gate::denies($action,$laravel_model)) {
-				View::share('permission', "You don't have permissions to acces object " . $model_undercase_name . ' with id: ' . $id);
-				abort(403);
-			}
-		}
+	public static function check_acl($model, $action, $id=null){
+        $model_undercase_name = strtolower(class_basename($model->getClass()));
+        if (! self::checkPermissionAccess($model, $action)) {
+            View::share('permission', $model_undercase_name.'-' . $action);
+            abort(403);
+        }
+        if ($id != null ) {
+            if (! self::checkPolicyAccess($model, $action, $id)) {
+                View::share('permission', "You don't have permissions to access object " . $model_undercase_name . ' with id: ' . $id);
+                abort(403);
+            }
+        }
 	}
 
+    /**
+     * Check permission access
+     * @param ModelConfiguration $model
+     * @param $action
+     * @return bool
+     */
+    public static function checkPermissionAccess($model, $action){
+        if ( ! $model->aclsAreActive()) return true;
+        $model_undercase_name = strtolower(class_basename($model->getClass()));
+        if (Gate::denies($model_undercase_name . '-' . $action)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check policy Access
+     * @param ModelConfiguration $model
+     * @param $action
+     * @param integer $id
+     * @return bool
+     */
+    public static function checkPolicyAccess($model, $action, $id){
+        if ( ! $model->aclsAreActive()) return true;
+        $class = $model->getClass();
+        if (self::model_uses_soft_deletes($class)) {
+            $laravel_model = $class::withTrashed()->findOrFail($id);
+        } else {
+            $laravel_model = $class::findOrFail($id);
+        }
+        if (Gate::denies($action,$laravel_model)) {
+            return false;
+        }
+        return true;
+    }
 
 	/**
 	 * Check if model uses trait soft Deleted
 	 * @param $model
 	 * @return bool
      */
-	private function model_uses_soft_deletes($model){
+	public static function model_uses_soft_deletes($model){
 		if (method_exists($model,'forceDelete') && method_exists($model,'restore') && method_exists($model,'trashed')) {
 			return true;
 		}
