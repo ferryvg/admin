@@ -329,13 +329,13 @@ class ModelConfiguration
 	/**
 	 * @return mixed|null
      */
-	protected function getShow()
+	protected function getShow($id)
 	{
 		if (is_null($this->show))
 		{
 			return null;
 		}
-		$show = call_user_func($this->show, null);
+		$show = call_user_func($this->show, $id);
 		if ($show instanceof DisplayInterface)
 		{
 			$show->setClass($this->class);
