@@ -53,6 +53,19 @@ class ModelConfiguration
      */
 	protected $edit;
 
+
+    /**
+     * Is Model displayable?
+     * @var boolean|Callable
+     */
+    protected $displayable = null;
+
+    /**
+     * Is Model creatable?
+     * @var boolean|Callable
+     */
+    protected $creatable = null;
+
 	/**
 	 * Is Model editable?
 	 * @var boolean|Callable
@@ -269,6 +282,61 @@ class ModelConfiguration
 	}
 
     /**
+     * Is displayable?
+     * @param null $displayable
+     * @param null $id
+     * @return $this|bool|Callable|mixed
+     */
+    public function displayable($displayable = null, $id = null){
+
+        if ($displayable == null) {
+            if (is_callable($this->displayable))
+            {
+                return call_user_func($this->displayable);
+            }
+            if ($this->displayable != null) {
+                return $this->displayable;
+            }
+            if ($id != null) {
+                return (AdminController::checkPermissionAccess($this, 'edit')
+                    && AdminController::checkPolicyAccess($this, 'retrieve', $id));
+            } else {
+                return AdminController::checkPermissionAccess($this, 'edit');
+            }
+        }
+        $this->displayable = $displayable;
+        return $this;
+    }
+
+    /**
+     * Is creatable?
+     * @param null $creatable
+     * @param null $id
+     * @return $this|bool|Callable|mixed
+     */
+    public function creatable($creatable = null, $id = null){
+
+        if ($creatable == null) {
+            if (is_callable($this->creatable))
+            {
+                return call_user_func($this->creatable);
+            }
+            if ($this->creatable != null) {
+                return $this->creatable;
+            }
+            if ($id != null) {
+                return (AdminController::checkPermissionAccess($this,'create')
+                        && AdminController::checkPolicyAccess($this,'create',$id));
+            } else {
+                return AdminController::checkPermissionAccess($this,'create');
+            }
+
+        }
+        $this->$creatable = $creatable;
+        return $this;
+    }
+
+    /**
      * Is editable?
      * @param null $editable
      * @param null $id
@@ -284,7 +352,13 @@ class ModelConfiguration
 			if ($this->editable != null) {
 				return $this->editable;
 			}
-			return (AdminController::checkPermissionAccess($this,'edit') && AdminController::checkPolicyAccess($this,'edit',$id));
+            if ($id != null) {
+                return (AdminController::checkPermissionAccess($this,'edit')
+                        && AdminController::checkPolicyAccess($this,'edit',$id));
+            } else {
+                return AdminController::checkPermissionAccess($this,'edit');
+            }
+
 		}
 		$this->editable = $editable;
 		return $this;
@@ -306,7 +380,12 @@ class ModelConfiguration
             if ($this->deletable != null) {
                 return $this->deletable;
             }
-            return (AdminController::checkPermissionAccess($this,'destroy') && AdminController::checkPolicyAccess($this,'destroy',$id));
+            if ($id != null) {
+                return (AdminController::checkPermissionAccess($this, 'destroy')
+                        && AdminController::checkPolicyAccess($this, 'destroy', $id));
+            } else {
+                return AdminController::checkPermissionAccess($this, 'destroy');
+            }
         }
         $this->deletable = $deletable;
         return $this;
@@ -328,7 +407,13 @@ class ModelConfiguration
             if ($this->restorable != null) {
                 return $this->restorable;
             }
-            return (AdminController::checkPermissionAccess($this,'restore') && AdminController::checkPolicyAccess($this,'restore',$id));
+            if ($id != null) {
+                return (AdminController::checkPermissionAccess($this,'restore')
+                        && AdminController::checkPolicyAccess($this,'restore',$id));
+            } else {
+                return AdminController::checkPermissionAccess($this,'restore');
+            }
+
         }
         $this->restorable = $restorable;
         return $this;
@@ -350,7 +435,12 @@ class ModelConfiguration
             if ($this->forceDeletable != null) {
                 return $this->forceDeletable;
             }
-            return (AdminController::checkPermissionAccess($this,'forceDestroy') && AdminController::checkPolicyAccess($this,'forceDestroy',$id));
+            if ($id != null) {
+                return (AdminController::checkPermissionAccess($this, 'forceDestroy')
+                    && AdminController::checkPolicyAccess($this, 'forceDestroy', $id));
+            } else {
+                return AdminController::checkPermissionAccess($this, 'forceDestroy');
+            }
         }
         $this->forceDeletable = $forceDeletable;
         return $this;
@@ -372,7 +462,12 @@ class ModelConfiguration
             if ($this->showable != null) {
                 return $this->showable;
             }
-            return (AdminController::checkPermissionAccess($this,'retrieve') && AdminController::checkPolicyAccess($this,'retrieve',$id));
+            if ($id != null) {
+                return (AdminController::checkPermissionAccess($this, 'retrieve')
+                        && AdminController::checkPolicyAccess($this, 'retrieve', $id));
+            } else {
+                return AdminController::checkPermissionAccess($this, 'retrieve');
+            }
         }
         $this->showable = $showable;
         return $this;
