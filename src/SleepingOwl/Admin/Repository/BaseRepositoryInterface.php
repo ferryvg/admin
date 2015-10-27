@@ -6,6 +6,7 @@
  * Time: 10:04
  */
 namespace SleepingOwl\Admin\Repository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
 /**
@@ -33,6 +34,15 @@ interface BaseRepositoryInterface
      * @return mixed
      */
     public function find($id);
+
+    /**
+     * Find model instance by id
+     * @param int $id
+     * @return mixed
+     * @throws ModelNotFoundException
+     */
+    public function findOrFail($id);
+
 
     /**
      * Find model instances by ids
