@@ -3,6 +3,10 @@
 namespace SleepingOwl\Admin\Repository;
 
 use Cache;
+use Eloquent;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 use Schema;
 
 /**
@@ -17,9 +21,10 @@ class BaseRepository implements BaseRepositoryInterface
 	 * @var string
 	 */
 	protected $class;
+
 	/**
 	 * Repository related model instance
-	 * @var mixed
+	 * @var \Eloquent | SoftDeletes
 	 */
 	protected $model;
 	/**
@@ -74,7 +79,27 @@ class BaseRepository implements BaseRepositoryInterface
 	 */
 	public function find($id)
 	{
-		return $this->model->find($id);
+        if ($this->model_uses_soft_deletes()) {
+            return $this->model->withTrashed()->find($id);
+        } else {
+            return $this->model->find($id);
+        }
+
+	}
+
+	/**
+	 * Find model instance by id
+	 * @param int $id
+	 * @return mixed
+	 * @throws ModelNotFoundException
+	 */
+	public function findOrFail($id)
+	{
+        if ($this->model_uses_soft_deletes()) {
+            return $this->model->withTrashed()->findOrFail($id);
+        } else {
+            return $this->model->findOrFail($id);
+        }
 	}
 
 	/**
@@ -84,13 +109,25 @@ class BaseRepository implements BaseRepositoryInterface
 	 */
 	public function findMany($ids)
 	{
+        /** @var Builder|SoftDeletes $query */
 		$query = $this->model->query();
-		if (method_exists($this->model, 'withTrashed'))
-		{
+        if ($this->model_uses_soft_deletes()) {
 			$query->withTrashed();
 		}
-		return $query->whereIn($this->model->getKeyName(), $ids)->get();
+        /** @var Builder $result */
+        $result = $query->whereIn($this->model->getKeyName(), $ids);
+        return $result->get();
 	}
+
+    /**
+     * Check if model uses trait softDeletes
+     * @return bool
+     */
+    public function model_uses_soft_deletes(){
+        if ( in_array(SoftDeletes::class, class_uses_recursive($this->model)) ) {
+            return true;
+        }
+    }
 
 	/**
 	 * Delete model instance by id
