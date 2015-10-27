@@ -1,8 +1,12 @@
-<?php namespace SleepingOwl\Admin\Form;
+<?php
+
+namespace SleepingOwl\Admin\Form;
 
 use AdminTemplate;
 use Config;
+use Eloquent;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\View\View;
 use Input;
 use SleepingOwl\Admin\Admin;
@@ -14,46 +18,65 @@ use SleepingOwl\Admin\Repository\BaseRepository;
 use URL;
 use Validator;
 
+/**
+ * Class FormDefault
+ * @package SleepingOwl\Admin\Form
+ */
 class FormDefault implements Renderable, DisplayInterface, FormInterface
 {
 
 	/**
 	 * View to render
+     *
 	 * @var string
 	 */
 	protected $view = 'default';
+
 	/**
 	 * Form related class
+     *
 	 * @var string
 	 */
 	protected $class;
+
 	/**
 	 * Form related repository
+     *
 	 * @var BaseRepository
 	 */
 	protected $repository;
+
 	/**
 	 * Form items
+     *
 	 * @var FormItemInterface[]
 	 */
 	protected $items = [];
+
 	/**
 	 * Form action url
+     *
 	 * @var string
 	 */
+
 	protected $action;
 	/**
 	 * Form related model instance
+     *
 	 * @var mixed
 	 */
 	protected $instance;
+
 	/**
 	 * Currently loaded model id
+     *
 	 * @var int
 	 */
 	protected $id;
+
 	/**
 	 * Is form already initialized?
+     *
 	 * @var bool
 	 */
 	protected $initialized = false;
@@ -92,6 +115,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 
 	/**
 	 * Set form class
+     *
 	 * @param string $class
 	 */
 	public function setClass($class)
@@ -104,6 +128,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 
 	/**
 	 * Get or set form items
+     *
 	 * @param FormInterface[]|null $items
 	 * @return $this|FormInterface[]
 	 */
@@ -119,8 +144,9 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 
 	/**
 	 * Get or set form related model instance
+     *
 	 * @param mixed|null $instance
-	 * @return $this|mixed
+	 * @return $this|mixed|Eloquent
 	 */
 	public function instance($instance = null)
 	{
@@ -142,6 +168,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 
 	/**
 	 * Set currently loaded model id
+     *
 	 * @param int $id
 	 */
 	public function setId($id)
@@ -149,12 +176,13 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 		if (is_null($this->id))
 		{
 			$this->id = $id;
-			$this->instance($this->repository->find($id));
+			$this->instance($this->repository->findOrFail($id));
 		}
 	}
 
 	/**
 	 * Get related form model configuration
+     *
 	 * @return ModelConfiguration
 	 */
 	public function model()
@@ -162,11 +190,14 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 		return Admin::model($this->class);
 	}
 
-	/**
-	 * Save instance
-	 * @param $model
-	 */
-	public function save($model)
+
+    /**
+     * Save instance
+     *
+     * @param mixed $model
+     * @return null
+     */
+    public function save($model)
 	{
 		if ($this->model() != $model)
 		{
@@ -185,6 +216,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 
 	/**
 	 * Validate data, returns null on success
+     *
 	 * @param mixed $model
 	 * @return Validator|null
 	 */
@@ -218,6 +250,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 
 	/**
 	 * Get redirect back URL
+     *
 	 * @return array|string
 	 * @throws ModelNotFoundException
      */
@@ -231,7 +264,13 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 
 	}
 
-	protected function beSureIsAbsoluteURL($url) {
+    /**
+     * Be sure is absolute URL
+     *
+     * @param $url
+     * @return string
+     */
+    protected function beSureIsAbsoluteURL($url) {
 		if (starts_with($url,'http://') || starts_with($url,'https://')) {
 			return $url;
 		} else {
@@ -245,6 +284,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 
 	/**
 	 * Get display URL (list of item models)
+     *
 	 * @param $model
 	 * @return string
 	 * @throws ModelNotFoundException
@@ -259,6 +299,8 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 	}
 
 	/**
+     * Render the view
+     *
 	 * @return View
 	 */
 	public function render()
@@ -273,6 +315,8 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 	}
 
 	/**
+     * Convert to string
+     *
 	 * @return string
 	 */
 	function __toString()

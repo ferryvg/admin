@@ -4,8 +4,10 @@ namespace SleepingOwl\Admin\Http\Controllers;
 
 use AdminTemplate;
 use App;
+use Eloquent;
 use Gate;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Input;
@@ -77,15 +79,14 @@ class AdminController extends Controller
     }
 
 	/**
-	 * Check if model uses trait soft Deleted
-	 * @param $model
+	 * Check if model uses trait softDeletes
+	 * @param Eloquent | string $model
 	 * @return bool
      */
 	public static function model_uses_soft_deletes($model){
-		if (method_exists($model,'forceDelete') && method_exists($model,'restore') && method_exists($model,'trashed')) {
+		if ( in_array(SoftDeletes::class, class_uses_recursive($model)) ) {
 			return true;
 		}
-		return false;
 	}
 
 	/**
