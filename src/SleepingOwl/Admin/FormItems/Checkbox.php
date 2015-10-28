@@ -1,13 +1,29 @@
-<?php namespace SleepingOwl\Admin\FormItems;
+<?php
+
+namespace SleepingOwl\Admin\FormItems;
 
 use Input;
 
+/**
+ * Class Checkbox
+ * @package SleepingOwl\Admin\FormItems
+ */
 class Checkbox extends NamedFormItem
 {
 
-	protected $view = 'checkbox';
+    use ShowableFormItem;
 
-	public function save()
+    /**
+     * view to render
+     *
+     * @var string
+     */
+    protected $view = 'checkbox';
+
+    /**
+     * Save checkbox
+     */
+    public function save()
 	{
 		$name = $this->name();
 		if ( ! Input::has($name))
