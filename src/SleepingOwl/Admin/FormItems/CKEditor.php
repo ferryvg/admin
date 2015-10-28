@@ -1,4 +1,6 @@
-<?php namespace SleepingOwl\Admin\FormItems;
+<?php
+
+namespace SleepingOwl\Admin\FormItems;
 
 use Exception;
 use Input;
@@ -9,19 +11,38 @@ use SplFileInfo;
 use stdClass;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class CKEditor
+ * @package SleepingOwl\Admin\FormItems
+ */
 class CKEditor extends NamedFormItem implements WithRoutesInterface
 {
 
-	protected $view = 'ckeditor';
+    use ShowableFormItem;
 
-	public function initialize()
+    /**
+     * view to render
+     *
+     * @var string
+     */
+    protected $view = 'ckeditor';
+
+    /**
+     * Initilaize
+     *
+     */
+    public function initialize()
 	{
 		parent::initialize();
 
 		AssetManager::addScript('admin::default/js/formitems/ckeditor/ckeditor.js');
 	}
 
-	public static function registerRoutes()
+    /**
+     * register laravel routes
+     *
+     */
+    public static function registerRoutes()
 	{
 		Route::get('assets/images/all', function ()
 		{
@@ -33,7 +54,12 @@ class CKEditor extends NamedFormItem implements WithRoutesInterface
 		});
 	}
 
-	protected static function getAll()
+    /**
+     * get All
+     *
+     * @return array
+     */
+    protected static function getAll()
 	{
 		$files = static::getAllFiles();
 		$result = [];
@@ -44,13 +70,24 @@ class CKEditor extends NamedFormItem implements WithRoutesInterface
 		return $result;
 	}
 
-	protected static function getAllFiles()
+    /**
+     * get All files
+     *
+     * @return Finder
+     */
+    protected static function getAllFiles()
 	{
 		$path = public_path(config('admin.imagesUploadDirectory'));
 		return Finder::create()->files()->in($path);
 	}
 
-	protected static function createImageObject(SplFileInfo $file)
+    /**
+     * create an image object
+     *
+     * @param SplFileInfo $file
+     * @return stdClass
+     */
+    protected static function createImageObject(SplFileInfo $file)
 	{
 		$obj = new StdClass;
 		$path = $file->getRelativePathname();
@@ -61,7 +98,12 @@ class CKEditor extends NamedFormItem implements WithRoutesInterface
 		return $obj;
 	}
 
-	protected static function postUpload()
+    /**
+     * process upload
+     *
+     * @return string
+     */
+    protected static function postUpload()
 	{
 		$path = config('admin.imagesUploadDirectory') . '/';
 		$upload_dir = public_path($path);
