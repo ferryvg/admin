@@ -1,8 +1,21 @@
-<?php namespace SleepingOwl\Admin\FormItems;
+<?php
 
+namespace SleepingOwl\Admin\FormItems;
+
+/**
+ * Class Text
+ * @package SleepingOwl\Admin\FormItems
+ */
 class Text extends NamedFormItem
 {
 
-	protected $view = 'text';
+	use ShowableFormItem;
+
+    /**
+     * view to render
+     *
+     * @var string
+     */
+    protected $view = 'text';
 
 }
