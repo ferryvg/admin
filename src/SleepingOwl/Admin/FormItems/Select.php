@@ -13,7 +13,7 @@ use SleepingOwl\Admin\Repository\BaseRepository;
 class Select extends NamedFormItem
 {
 
-	use ShowableFormItem { getParams as getParamsShowable; };
+	use ShowableFormItem { getParams as getParamsShowable; }
 
 	/**
 	 * view to render
