@@ -124,7 +124,7 @@ class BaseRepository implements BaseRepositoryInterface
      * @return bool
      */
     public function model_uses_soft_deletes(){
-        if ( in_array(SoftDeletes::class, class_uses_recursive($this->model)) ) {
+        if ( in_array(SoftDeletes::class, class_uses_recursive(get_class($this->model))) ) {
             return true;
         }
     }
