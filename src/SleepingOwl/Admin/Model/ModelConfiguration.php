@@ -654,7 +654,7 @@ class ModelConfiguration
 	public function fullShow($id)
 	{
 		$show = $this->show($id);
-		if ($show instanceof ShowInterface)
+		if ($show instanceof ShowInterface || $show instanceof FormInterface)
 		{
 			$show->setId($id);
 		}
