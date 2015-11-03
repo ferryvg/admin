@@ -1,23 +1,59 @@
-<?php namespace SleepingOwl\Admin\Filter;
+<?php
+
+namespace SleepingOwl\Admin\Filter;
 
 use Input;
 use SleepingOwl\Admin\Interfaces\FilterInterface;
 
+/**
+ * Class FilterBase
+ * @package SleepingOwl\Admin\Filter
+ */
 abstract class FilterBase implements FilterInterface
 {
 
-	protected $name;
-	protected $alias;
-	protected $title;
-	protected $value;
+    /**
+     * Filter name
+     *
+     * @var String
+     */
+    protected $name;
 
-	function __construct($name)
+    /**
+     * Filter alias
+     *
+     * @var
+     */
+    protected $alias;
+
+    /**
+     * Filter title
+     *
+     * @var
+     */
+    protected $title;
+
+    /**
+     * Filter value
+     *
+     * @var
+     */
+    protected $value;
+
+    /**
+     * @param $name
+     */
+    function __construct($name)
 	{
 		$this->name($name);
 		$this->alias($name);
 	}
 
-	public function name($name = null)
+    /**
+     * @param null $name
+     * @return $this|string
+     */
+    public function name($name = null)
 	{
 		if (is_null($name))
 		{
@@ -27,7 +63,11 @@ abstract class FilterBase implements FilterInterface
 		return $this;
 	}
 
-	public function alias($alias = null)
+    /**
+     * @param null $alias
+     * @return $this
+     */
+    public function alias($alias = null)
 	{
 		if (is_null($alias))
 		{
@@ -37,7 +77,11 @@ abstract class FilterBase implements FilterInterface
 		return $this;
 	}
 
-	public function title($title = null)
+    /**
+     * @param null $title
+     * @return $this|mixed
+     */
+    public function title($title = null)
 	{
 		if (is_null($title))
 		{
@@ -51,7 +95,11 @@ abstract class FilterBase implements FilterInterface
 		return $this;
 	}
 
-	public function value($value = null)
+    /**
+     * @param null $value
+     * @return $this
+     */
+    public function value($value = null)
 	{
 		if (is_null($value))
 		{
@@ -61,7 +109,10 @@ abstract class FilterBase implements FilterInterface
 		return $this;
 	}
 
-	public function initialize()
+    /**
+     *
+     */
+    public function initialize()
 	{
 		$parameters = Input::all();
 		$value = $this->value();
@@ -72,12 +123,18 @@ abstract class FilterBase implements FilterInterface
 		$this->value($value);
 	}
 
-	public function isActive()
+    /**
+     * @return bool
+     */
+    public function isActive()
 	{
 		return ! is_null($this->value());
 	}
 
-	public function apply($query)
+    /**
+     * @param $query
+     */
+    public function apply($query)
 	{
 		$query->where($this->name(), $this->value());
 	}

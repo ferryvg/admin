@@ -1,21 +1,38 @@
-<?php namespace SleepingOwl\Admin\AssetManager;
+<?php
 
+namespace SleepingOwl\Admin\AssetManager;
+
+/**
+ * Class AssetManager
+ * @package SleepingOwl\Admin\AssetManager
+ */
 class AssetManager
 {
 
 	/**
 	 * Registered styles
+	 *
 	 * @var string[]
 	 */
 	protected static $styles = [];
+
 	/**
 	 * Registered scripts
+	 *
 	 * @var string[]
 	 */
 	protected static $scripts = [];
 
 	/**
+	 * Registered scripts
+	 *
+	 * @var string[]
+	 */
+	protected static $templates = [];
+
+	/**
 	 * Return all registered styles
+	 *
 	 * @return string[]
 	 */
 	public static function styles()
@@ -25,6 +42,7 @@ class AssetManager
 
 	/**
 	 * Register style
+	 *
 	 * @param $style
 	 */
 	public static function addStyle($style)
@@ -34,6 +52,7 @@ class AssetManager
 
 	/**
 	 * Get all registered scripts
+	 *
 	 * @return string[]
 	 */
 	public static function scripts()
@@ -41,8 +60,19 @@ class AssetManager
 		return static::assets(static::$scripts);
 	}
 
+    /**
+     * Get all registered templates
+     *
+     * @return string[]
+     */
+    public static function templates()
+    {
+        return static::assets(static::$templates);
+    }
+
 	/**
 	 * Register script
+	 *
 	 * @param $script
 	 */
 	public static function addScript($script)
@@ -50,8 +80,21 @@ class AssetManager
 		static::$scripts[] = $script;
 	}
 
+
+    /**
+     * Register template
+     *
+     * @param $id
+     * @param $template
+     */
+    public static function addTemplate($id,$template)
+	{
+		static::$templates[$id] = $template;
+	}
+
 	/**
 	 * Get only unique values from $assets and generate admin package asset urls
+	 *
 	 * @param string[] $assets
 	 * @return string[]
 	 */
