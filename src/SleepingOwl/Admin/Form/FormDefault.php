@@ -305,12 +305,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 	 */
 	public function render()
 	{
-		$params = [
-			'items'    => $this->items(),
-			'instance' => $this->instance(),
-			'action'   => $this->action,
-			'backUrl'  => $this->obtainRedirectBack(),
-		];
+		$params = $this->getParams();
 		return view(AdminTemplate::view('form.' . $this->view), $params);
 	}
 
@@ -322,6 +317,22 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 	function __toString()
 	{
 		return (string)$this->render();
+	}
+
+	/**
+	 * Params for view to render
+	 *
+	 * @return array
+	 */
+	protected function getParams()
+	{
+		$params = [
+			'items' => $this->items(),
+			'instance' => $this->instance(),
+			'action' => $this->action,
+			'backUrl' => $this->obtainRedirectBack(),
+		];
+		return $params;
 	}
 
 }
