@@ -3,6 +3,7 @@
 namespace SleepingOwl\Admin\Model;
 
 use Config;
+use Eloquent;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use SleepingOwl\Admin\Http\Controllers\AdminController;
@@ -282,6 +283,28 @@ class ModelConfiguration
 	}
 
     /**
+     * Check permissions and policies (if needed => id !=null)
+     *
+     * @param $id
+     * @param $action
+     * @return bool
+     */
+    protected function checkPermissionAndPolicies($id, $action)
+    {
+        if ($id != null) {
+            if ($id instanceof Eloquent) {
+                return (AdminController::checkPermissionAccess($this, $action) &&
+                    AdminController::checkPolicyAccessByInstance($this, $action, $id));
+            } else {
+                return (AdminController::checkPermissionAccess($this, $action) &&
+                    AdminController::checkPolicyAccess($this, $action, $id));
+            }
+        } else {
+            return AdminController::checkPermissionAccess($this, $action);
+        }
+    }
+
+    /**
      * Is displayable?
      * @param null $displayable
      * @param null $id
@@ -297,12 +320,7 @@ class ModelConfiguration
             if ($this->displayable != null) {
                 return $this->displayable;
             }
-            if ($id != null) {
-                return (AdminController::checkPermissionAccess($this, 'edit')
-                    && AdminController::checkPolicyAccess($this, 'retrieve', $id));
-            } else {
-                return AdminController::checkPermissionAccess($this, 'edit');
-            }
+            return $this->checkPermissionAndPolicies($id, 'retrieve');
         }
         $this->displayable = $displayable;
         return $this;
@@ -311,7 +329,7 @@ class ModelConfiguration
     /**
      * Is creatable?
      * @param null $creatable
-     * @param null $id
+     * @param null|integer|Eloquent $id
      * @return $this|bool|Callable|mixed
      */
     public function creatable($creatable = null, $id = null){
@@ -324,13 +342,7 @@ class ModelConfiguration
             if ($this->creatable != null) {
                 return $this->creatable;
             }
-            if ($id != null) {
-                return (AdminController::checkPermissionAccess($this,'create')
-                        && AdminController::checkPolicyAccess($this,'create',$id));
-            } else {
-                return AdminController::checkPermissionAccess($this,'create');
-            }
-
+            return $this->checkPermissionAndPolicies($id, 'create');
         }
         $this->$creatable = $creatable;
         return $this;
@@ -339,7 +351,7 @@ class ModelConfiguration
     /**
      * Is editable?
      * @param null $editable
-     * @param null $id
+     * @param null|integer|Eloquent $id
      * @return $this|bool|Callable|mixed
      */
     public function editable($editable = null, $id = null){
@@ -352,14 +364,8 @@ class ModelConfiguration
 			if ($this->editable != null) {
 				return $this->editable;
 			}
-            if ($id != null) {
-                return (AdminController::checkPermissionAccess($this,'edit')
-                        && AdminController::checkPolicyAccess($this,'edit',$id));
-            } else {
-                return AdminController::checkPermissionAccess($this,'edit');
-            }
-
-		}
+            return $this->checkPermissionAndPolicies($id, 'edit');
+        }
 		$this->editable = $editable;
 		return $this;
 	}
@@ -367,7 +373,7 @@ class ModelConfiguration
     /**
      * Is deletable?
      * @param null $deletable
-     * @param null $id
+     * @param null|integer|Eloquent $id
      * @return $this|bool|Callable|mixed
      */
     public function deletable($deletable = null, $id = null){
@@ -380,12 +386,7 @@ class ModelConfiguration
             if ($this->deletable != null) {
                 return $this->deletable;
             }
-            if ($id != null) {
-                return (AdminController::checkPermissionAccess($this, 'destroy')
-                        && AdminController::checkPolicyAccess($this, 'destroy', $id));
-            } else {
-                return AdminController::checkPermissionAccess($this, 'destroy');
-            }
+            return $this->checkPermissionAndPolicies($id, 'destroy');
         }
         $this->deletable = $deletable;
         return $this;
@@ -393,8 +394,9 @@ class ModelConfiguration
 
     /**
      * Is restorable?
+     *
      * @param null $restorable
-     * @param null $id
+     * @param null|integer|Eloquent $id
      * @return $this|bool|Callable|mixed
      */
     public function restorable($restorable = null, $id = null){
@@ -407,13 +409,7 @@ class ModelConfiguration
             if ($this->restorable != null) {
                 return $this->restorable;
             }
-            if ($id != null) {
-                return (AdminController::checkPermissionAccess($this,'restore')
-                        && AdminController::checkPolicyAccess($this,'restore',$id));
-            } else {
-                return AdminController::checkPermissionAccess($this,'restore');
-            }
-
+            return $this->checkPermissionAndPolicies($id, 'restore');
         }
         $this->restorable = $restorable;
         return $this;
@@ -421,8 +417,9 @@ class ModelConfiguration
 
     /**
      * Is forceDeletable?
+     *
      * @param null $forceDeletable
-     * @param null $id
+     * @param null|integer|Eloquent $id
      * @return $this|bool|Callable|mixed
      */
     public function forceDeletable($forceDeletable = null, $id = null){
@@ -435,12 +432,7 @@ class ModelConfiguration
             if ($this->forceDeletable != null) {
                 return $this->forceDeletable;
             }
-            if ($id != null) {
-                return (AdminController::checkPermissionAccess($this, 'forceDestroy')
-                    && AdminController::checkPolicyAccess($this, 'forceDestroy', $id));
-            } else {
-                return AdminController::checkPermissionAccess($this, 'forceDestroy');
-            }
+            return $this->checkPermissionAndPolicies($id, 'forceDestroy');
         }
         $this->forceDeletable = $forceDeletable;
         return $this;
@@ -448,8 +440,9 @@ class ModelConfiguration
 
     /**
      * Is showable?
+     *
      * @param null $showable
-     * @param null $id
+     * @param null|integer|Eloquent $id
      * @return $this|bool|Callable|mixed
      */
     public function showable($showable = null, $id = null){
@@ -462,12 +455,7 @@ class ModelConfiguration
             if ($this->showable != null) {
                 return $this->showable;
             }
-            if ($id != null) {
-                return (AdminController::checkPermissionAccess($this, 'retrieve')
-                        && AdminController::checkPolicyAccess($this, 'retrieve', $id));
-            } else {
-                return AdminController::checkPermissionAccess($this, 'retrieve');
-            }
+            return $this->checkPermissionAndPolicies($id, 'show');
         }
         $this->showable = $showable;
         return $this;
