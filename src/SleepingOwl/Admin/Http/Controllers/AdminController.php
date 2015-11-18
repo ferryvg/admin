@@ -14,6 +14,7 @@ use Input;
 use Redirect;
 use SleepingOwl\Admin\Interfaces\FormInterface;
 use SleepingOwl\Admin\Model\ModelConfiguration;
+use SleepingOwl\Admin\Repository\TreeRepository;
 use View;
 
 /**
@@ -362,10 +363,24 @@ class AdminController extends Controller
 
 	/**
 	 * get Wildcard
+	 *
      */
 	public function getWildcard()
 	{
 		abort(404);
+	}
+
+	/**
+	 * reorder
+	 *
+	 * @param ModelConfiguration $model
+     */
+	public function reorder($model)
+	{
+		$data = Input::get('data');
+		/** @var TreeRepository $repository */
+		$repository = $model->display()->repository();
+		$repository->reorder($data);
 	}
 
 } 

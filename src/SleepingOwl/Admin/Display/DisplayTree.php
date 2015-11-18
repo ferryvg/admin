@@ -112,11 +112,7 @@ class DisplayTree implements Renderable, DisplayInterface, WithRoutesInterface
 
 	public static function registerRoutes()
 	{
-		Route::post('{adminModel}/reorder', function ($model)
-		{
-			$data = Input::get('data');
-			$model->display()->repository()->reorder($data);
-		});
+		Route::post('{adminModel}/reorder','AdminController@reorder');
 	}
 
 	public function value($value = null)
