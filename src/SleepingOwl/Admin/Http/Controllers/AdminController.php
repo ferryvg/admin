@@ -44,7 +44,7 @@ class AdminController extends Controller
         }
 	}
 
-    /**
+	/**
      * Check permission access
 	 *
      * @param ModelConfiguration $model
@@ -76,7 +76,32 @@ class AdminController extends Controller
         } else {
             $laravel_model = $class::findOrFail($id);
         }
-        if (Gate::denies($action,$laravel_model)) {
+		return self::checkPolicy($action, $laravel_model);
+    }
+
+    /**
+     * Check policy Access
+     *
+     * @param ModelConfiguration $model
+     * @param $action
+     * @param $instance
+     * @return bool
+     */
+    public static function checkPolicyAccessByInstance($model, $action, $instance){
+		if ( ! $model->aclsAreActive()) return true;
+		return self::checkPolicy($action, $instance);
+	}
+
+    /**
+     * check Policy
+     *
+     * @param $action
+     * @param $instance
+     * @return bool
+     */
+    protected static function checkPolicy($action, $instance)
+    {
+        if (Gate::denies($action, $instance)) {
             return false;
         }
         return true;
