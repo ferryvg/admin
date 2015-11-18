@@ -18,12 +18,14 @@ use View;
 
 /**
  * Class AdminController
+ *
  * @package SleepingOwl\Admin\Http\Controllers
  */
 class AdminController extends Controller
 {
 	/**
 	 * Check acl: permissions and policies
+	 *
 	 * @param ModelConfiguration $model
 	 * @param $action
 	 * @param null $id
@@ -44,6 +46,7 @@ class AdminController extends Controller
 
     /**
      * Check permission access
+	 *
      * @param ModelConfiguration $model
      * @param $action
      * @return bool
@@ -59,6 +62,7 @@ class AdminController extends Controller
 
     /**
      * Check policy Access
+	 *
      * @param ModelConfiguration $model
      * @param $action
      * @param integer $id
@@ -80,6 +84,7 @@ class AdminController extends Controller
 
 	/**
 	 * Check if model uses trait softDeletes
+	 *
 	 * @param Eloquent | string $model
 	 * @return bool
      */
@@ -90,6 +95,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * get Display
+	 *
 	 * @param ModelConfiguration $model
 	 * @return View
      */
@@ -100,6 +107,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * get Create
+	 *
 	 * @param ModelConfiguration $model
 	 * @return View
      */
@@ -115,6 +124,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * post Store
+	 *
 	 * @param ModelConfiguration $model
 	 * @return \Illuminate\Http\RedirectResponse
      */
@@ -140,6 +151,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * get Edit
+	 *
 	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return View
@@ -156,6 +169,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * get show
+	 *
 	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return View
@@ -172,6 +187,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * post Update
+	 *
 	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return \Illuminate\Http\RedirectResponse
@@ -198,6 +215,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * post destroy
+	 *
 	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return \Illuminate\Http\RedirectResponse
@@ -215,6 +234,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * post Force Destroy
+	 *
 	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return \Illuminate\Http\RedirectResponse
@@ -232,6 +253,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * post Restore
+	 *
 	 * @param ModelConfiguration $model
 	 * @param $id
 	 * @return \Illuminate\Http\RedirectResponse
@@ -249,6 +272,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * Render the view
+	 *
 	 * @param $title
 	 * @param $content
 	 * @return View
@@ -266,6 +291,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * get Language
+	 *
 	 * @return Response
      */
 	public function getLang()
@@ -294,6 +321,8 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * Cache response
+	 *
 	 * @param Response $response
 	 * @return Response
      */
@@ -307,7 +336,7 @@ class AdminController extends Controller
 	}
 
 	/**
-	 *
+	 * get Wildcard
      */
 	public function getWildcard()
 	{
