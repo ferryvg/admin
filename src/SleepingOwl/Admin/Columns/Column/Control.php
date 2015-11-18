@@ -9,12 +9,13 @@ class Control extends BaseColumn
 
 	/**
 	 * Column view
+	 *
 	 * @var string
 	 */
 	protected $view = 'control';
 
 	/**
-	 *
+	 * Constructor
 	 */
 	function __construct()
 	{
@@ -27,6 +28,7 @@ class Control extends BaseColumn
 
 	/**
 	 * Initialize column
+	 *
 	 */
 	public function initialize()
 	{
@@ -38,6 +40,7 @@ class Control extends BaseColumn
 
 	/**
 	 * Check if instance supports soft-deletes and trashed
+	 *
 	 * @return bool
 	 */
 	protected function trashed()
@@ -51,18 +54,17 @@ class Control extends BaseColumn
 
     /**
      * Check if instance is showable
+	 *
      * @return bool
      */
     protected function showable()
     {
-        //Executing all edit method on every instance in the retrieve view is very bad performance only to check if is
-        //showable!
-        //return !is_null($this->model()->show($this->instance->getKey()));
-        return $this->model()->showable(null,$this->instance->getKey());
+        return $this->model()->showable(null,$this->instance);
     }
 
     /**
      * Get instance show url
+	 *
      * @return string
      */
     protected function showUrl()
@@ -72,18 +74,17 @@ class Control extends BaseColumn
 
 	/**
 	 * Check if instance editable
+	 *
 	 * @return bool
 	 */
 	protected function editable()
 	{
-		//Executing all edit method on every instance in the retrieve view is very bad performance only to check if is
-		//editable!
-		//return ! $this->trashed() && ! is_null($this->model()->edit($this->instance->getKey()));
-		return ! $this->trashed() && $this->model()->editable(null,$this->instance->getKey());
+		return ! $this->trashed() && $this->model()->editable(null,$this->instance);
 	}
 
 	/**
 	 * Get instance edit url
+	 *
 	 * @return string
 	 */
 	protected function editUrl()
@@ -93,18 +94,17 @@ class Control extends BaseColumn
 
 	/**
 	 * Check if instance is deletable
+	 *
 	 * @return bool
 	 */
 	protected function deletable()
 	{
-        //Executing all edit method on every instance in the retrieve view is very bad performance only to check if is
-        //deletable!
-		//return ! $this->trashed() && ! is_null($this->model()->delete($this->instance->getKey()));
-        return ! $this->trashed() && $this->model()->deletable(null,$this->instance->getKey());
+        return ! $this->trashed() && $this->model()->deletable(null,$this->instance);
 	}
 
     /**
 	 * Get instance delete url
+	 *
 	 * @return string
 	 */
 	protected function deleteUrl()
@@ -114,18 +114,17 @@ class Control extends BaseColumn
 
 	/**
 	 * Check if instance is restorable
+	 *
 	 * @return bool
 	 */
 	protected function restorable()
 	{
-        //Executing all edit method on every instance in the retrieve view is very bad performance only to check if is
-        //restorable!
-		//return $this->trashed() && ! is_null($this->model()->restore($this->instance->getKey()));
-        return $this->trashed() && $this->model()->restorable(null,$this->instance->getKey());
+        return $this->trashed() && $this->model()->restorable(null,$this->instance);
 	}
 
 	/**
 	 * Get instance restore url
+	 *
 	 * @return string
 	 */
 	protected function restoreUrl()
@@ -135,18 +134,17 @@ class Control extends BaseColumn
 
     /**
      * Check if instance is force deletable
+	 *
      * @return bool
      */
     protected function forceDeletable()
     {
-        //Executing all edit method on every instance in the retrieve view is very bad performance only to check if is
-        //force deletable!
-        //return $this->trashed() && ! is_null($this->model()->delete($this->instance->getKey()));
-        return $this->trashed() && ! is_null($this->model()->forceDeletable($this->instance->getKey()));
+        return $this->trashed() && ! is_null($this->model()->forceDeletable($this->instance));
     }
 
     /**
      * Get instance force delete url
+	 *
      * @return string
      */
     public function forceDeleteUrl()
@@ -155,6 +153,8 @@ class Control extends BaseColumn
     }
 
 	/**
+	 * Render the view
+	 *
 	 * @return View
 	 */
 	public function render()
@@ -165,6 +165,7 @@ class Control extends BaseColumn
 
     /**
      * Get render parameters
+	 *
      * @return array
      */
     protected function getParams()
@@ -184,5 +185,4 @@ class Control extends BaseColumn
 
         return $params;
     }
-
 }

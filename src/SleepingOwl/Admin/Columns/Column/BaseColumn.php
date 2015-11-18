@@ -1,5 +1,6 @@
 <?php namespace SleepingOwl\Admin\Columns\Column;
 
+use Exception;
 use Illuminate\Contracts\Support\Renderable;
 use SleepingOwl\Admin\Admin;
 use SleepingOwl\Admin\Interfaces\ColumnInterface;
@@ -126,7 +127,11 @@ abstract class BaseColumn implements Renderable, ColumnInterface
 	 */
 	function __toString()
 	{
-		return (string)$this->render();
-	}
+        try {
+            return (string)$this->render();
+        } catch (Exception $e) {
+            var_dump($e);
+        }
+    }
 
 }
