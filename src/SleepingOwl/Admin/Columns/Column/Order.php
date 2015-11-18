@@ -14,10 +14,10 @@ class Order extends BaseColumn implements WithRoutesInterface
 	public static function registerRoutes()
 	{
 		Route::post('{adminModel}/{adminModelId}/up', [
-			'as' => 'admin.model.move-up','AdminController@up'
+			'as' => 'admin.model.move-up','uses' => '\SleepingOwl\Admin\Http\Controllers\AdminController@up'
 		]);
 		Route::post('{adminModel}/{adminModelId}/down', [
-			'as' => 'admin.model.move-down','AdminController@down'
+			'as' => 'admin.model.move-down','uses' => '\SleepingOwl\Admin\Http\Controllers\AdminController@down'
 		]);
 	}
 

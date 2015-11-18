@@ -44,8 +44,8 @@ class CKEditor extends NamedFormItem implements WithRoutesInterface
      */
     public static function registerRoutes()
 	{
-		Route::get('assets/images/all', 'AdminController@getAllImages');
-		Route::post('assets/images/upload', 'AdminController@postUpload');
+		Route::get('assets/images/all', '\SleepingOwl\Admin\Http\Controllers\AdminController@getAllImages');
+		Route::post('assets/images/upload', '\SleepingOwl\Admin\Http\Controllers\AdminController@postUpload');
 	}
 
 }

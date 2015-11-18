@@ -21,7 +21,8 @@ class Image extends NamedFormItem implements WithRoutesInterface
 	public static function registerRoutes()
 	{
 		Route::post('formitems/image/' . static::$route, [
-			'as' => 'admin.formitems.image.' . static::$route,'AdminController@uploadImage'
+				'as' => 'admin.formitems.image.' . static::$route,
+				'uses' => '\SleepingOwl\Admin\Http\Controllers\AdminController@uploadImage'
 		]);
 	}
 
