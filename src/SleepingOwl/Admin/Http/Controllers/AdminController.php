@@ -383,4 +383,32 @@ class AdminController extends Controller
 		$repository->reorder($data);
 	}
 
+	/**
+	 * up
+	 *
+	 * @param ModelConfiguration $model
+	 * @param $id
+	 * @return \Illuminate\Http\RedirectResponse
+     */
+	function up($model, $id)
+	{
+		$instance = $model->repository()->find($id);
+		$instance->moveUp();
+		return back();
+	}
+
+	/**
+	 * down
+	 *
+	 * @param ModelConfiguration $model
+	 * @param $id
+	 * @return \Illuminate\Http\RedirectResponse
+     */
+	function down($model, $id)
+	{
+		$instance = $model->repository()->find($id);
+		$instance->moveDown();
+		return back();
+	}
+
 } 
