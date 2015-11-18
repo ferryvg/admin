@@ -19,7 +19,9 @@ use SleepingOwl\Admin\Repository\TreeRepository;
 use SplFileInfo;
 use stdClass;
 use Symfony\Component\Finder\Finder;
+use Validator;
 use View;
+use Response as ResponseFacade;
 
 /**
  * Class AdminController
@@ -563,6 +565,42 @@ class AdminController extends Controller
         ]);
         $result = "window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$message')";
         return '<script>' . $result . ';</script>';
+    }
+
+    /**
+     * Upload image
+     *
+     * @return array
+     */
+    public function uploadImage()
+    {
+        $validator = Validator::make(Input::all(), static::uploadValidationRules());
+        if ($validator->fails())
+        {
+            return ResponseFacade::make($validator->errors()->get('file'), 400);
+        }
+        $file = Input::file('file');
+        $filename = md5(time() . $file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+        $path = config('admin.imagesUploadDirectory');
+        $fullpath = public_path($path);
+        $file->move($fullpath, $filename);
+        $value = $path . '/' . $filename;
+        return [
+            'url'   => asset($value),
+            'value' => $value,
+        ];
+    }
+
+    /**
+     * uploadValidationRules
+     *
+     * @return array
+     */
+    protected static function uploadValidationRules()
+    {
+        return [
+            'file' => 'image',
+        ];
     }
 
 } 
