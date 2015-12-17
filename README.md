@@ -50,18 +50,6 @@ It includes:
 
 		$ php artisan admin:install
 
-## Documentation
-
-Documentation can be found at [sleeping owl documentation](http://sleeping-owl.github.io/v3).
-
-## Demo Application
-
-View [live demo](http://sleepingowladmindemo2.cloudcontrolled.com).
-
-## Support Library
-
-You can donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AXJMWMRPCBGVA), Yandex money (410012943296949) or in BTC: 13k36pym383rEmsBSLyWfT3TxCQMN2Lekd
-
 ## Copyright and License
 
 Admin was written by Sleeping Owl for the Laravel framework and is released under the MIT License. See the LICENSE file for details.
