@@ -18,7 +18,7 @@ class ColumnServiceProvider extends ServiceProvider
 		Column::register('image', 'SleepingOwl\Admin\Columns\Column\Image');
 		Column::register('lists', 'SleepingOwl\Admin\Columns\Column\Lists');
 		Column::register('order', 'SleepingOwl\Admin\Columns\Column\Order');
-		Column::register('string', 'SleepingOwl\Admin\Columns\Column\String');
+		Column::register('text', 'SleepingOwl\Admin\Columns\Column\Text');
 		Column::register('treeControl', 'SleepingOwl\Admin\Columns\Column\TreeControl');
 		Column::register('url', 'SleepingOwl\Admin\Columns\Column\Url');
 	}
