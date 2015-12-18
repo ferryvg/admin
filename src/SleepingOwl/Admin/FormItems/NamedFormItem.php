@@ -4,13 +4,13 @@ use Input;
 
 abstract class NamedFormItem extends BaseFormItem
 {
-
 	protected $path;
 	protected $name;
 	protected $attribute;
 	protected $label;
 	protected $defaultValue;
 	protected $readonly;
+	protected $save = true;
 
 	function __construct($path, $label = null)
 	{
@@ -70,10 +70,10 @@ abstract class NamedFormItem extends BaseFormItem
 	public function getParams()
 	{
 		return parent::getParams() + [
-			'name'      => $this->name(),
-			'label'     => $this->label(),
-			'readonly'  => $this->readonly(),
-			'value'     => $this->value()
+				'name'      => $this->name(),
+				'label'     => $this->label(),
+				'readonly'  => $this->readonly(),
+				'value'     => $this->value()
 		];
 	}
 
@@ -119,15 +119,27 @@ abstract class NamedFormItem extends BaseFormItem
 		return $this->defaultValue();
 	}
 
+	public function setSave($save = null)
+	{
+		if (is_null($save))
+		{
+			return $this->save;
+		}
+		$this->save = $save;
+		return $this;
+	}
+
 	public function save()
 	{
-		$attribute = $this->attribute();
-		if (Input::get($this->path()) === null) {
-			$value = null;
-		} else {
-			$value = $this->value();
+		if ($this->save){
+			$attribute = $this->attribute();
+			if (Input::get($this->path()) === null) {
+				$value = null;
+			} else {
+				$value = $this->value();
+			}
+			$this->instance()->$attribute = $value;
 		}
-		$this->instance()->$attribute = $value;
 	}
 
 	public function required()
@@ -156,8 +168,7 @@ abstract class NamedFormItem extends BaseFormItem
 			}
 		});
 		return [
-			$this->name() => $rules
+				$this->name() => $rules
 		];
 	}
-
 }
