@@ -77,7 +77,7 @@ abstract class BaseFormItem implements Renderable, FormItemInterface
 	{
 		try
 		{
-			return (string)$this->render();
+			return (gettype($this->render()) == 'string')? $this->render(): (string)$this->render();
 		} catch (\Exception $e)
 		{
 			ExceptionHandler::handle($e);

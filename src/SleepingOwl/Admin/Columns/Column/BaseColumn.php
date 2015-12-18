@@ -128,7 +128,7 @@ abstract class BaseColumn implements Renderable, ColumnInterface
 	function __toString()
 	{
         try {
-            return (string)$this->render();
+			return (gettype($this->render()) == 'string')? $this->render(): (string)$this->render();
         } catch (Exception $e) {
             var_dump($e);
         }

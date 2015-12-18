@@ -207,7 +207,7 @@ class ShowDefault implements Renderable, DisplayInterface, ShowInterface
 	 */
 	function __toString()
 	{
-		return (string)$this->render();
+		return (gettype($this->render()) == 'string')? $this->render(): (string)$this->render();
 	}
 
 }

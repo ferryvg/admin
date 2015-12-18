@@ -316,7 +316,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 	 */
 	function __toString()
 	{
-		return (string)$this->render();
+		return (gettype($this->render()) == 'string')? $this->render(): (string)$this->render();
 	}
 
 	/**

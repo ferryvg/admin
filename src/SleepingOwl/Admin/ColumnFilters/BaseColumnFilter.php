@@ -38,7 +38,7 @@ abstract class BaseColumnFilter implements Renderable, ColumnFilterInterface
 	{
 		try
 		{
-			return (string)$this->render();
+			return (gettype($this->render()) == 'string')? $this->render(): (string)$this->render();
 		} catch (\Exception $e)
 		{
 			ExceptionHandler::handle($e);

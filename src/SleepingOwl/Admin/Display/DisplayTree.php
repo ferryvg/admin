@@ -107,7 +107,7 @@ class DisplayTree implements Renderable, DisplayInterface, WithRoutesInterface
 
 	function __toString()
 	{
-		return (string)$this->render();
+		return (gettype($this->render()) == 'string')? $this->render(): (string)$this->render();
 	}
 
 	public static function registerRoutes()

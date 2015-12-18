@@ -66,7 +66,7 @@ class ColumnHeader implements Renderable,JsonSerializable
 	 */
 	function __toString()
 	{
-		return (string)$this->render();
+		return (gettype($this->render()) == 'string')? $this->render(): (string)$this->render();
 	}
 
 	/**
