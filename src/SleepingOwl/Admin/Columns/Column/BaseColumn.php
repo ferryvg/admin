@@ -15,6 +15,11 @@ abstract class BaseColumn implements Renderable, ColumnInterface
 	 */
 	protected $header;
 	/**
+	 * json
+	 * @var json
+	 */
+	protected $json = false;
+	/**
 	 * Model instance currently rendering
 	 * @var mixed
 	 */
@@ -40,6 +45,14 @@ abstract class BaseColumn implements Renderable, ColumnInterface
 	{
 	}
 
+	/**
+	 * Render Json activate
+     */
+	public function toJson()
+	{
+		$this->json = true;
+		return $this;
+	}
 	/**
 	 * Get related model configuration
 	 * @return ModelConfiguration
