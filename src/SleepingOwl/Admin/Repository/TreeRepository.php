@@ -78,7 +78,8 @@ class TreeRepository extends BaseRepository
 		switch ($this->type())
 		{
 			case static::TreeTypeBaum:
-				return $collection->toHierarchy();
+				return $this->createSimpleTree();
+				//return $collection->toHierarchy();
 				break;
 			case static::TreeTypeKalnoy:
 				return $collection->toTree();
@@ -270,7 +271,7 @@ class TreeRepository extends BaseRepository
 	 */
 	protected function createSimpleTree()
 	{
-		$collection = $this->query()->orderBy($this->parentField(), 'asc')->orderBy($this->orderField(), 'asc')->get();
+		$collection = $this->query()->orderBy($this->parentField(), 'asc')->get();
 
 		$parent = $this->rootParentId();
 		return $this->getChildren($collection, $parent);
