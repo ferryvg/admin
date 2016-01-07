@@ -299,7 +299,7 @@ class ModelConfiguration
     {
         if ($id != null) {
             if ($id instanceof Eloquent || ! is_int($id)) {
-                return (AdminController::checkPermissionAccess($this, $action) &&
+                return (AdminController::checkPermissionAccess($this, $action) ||
                     AdminController::checkPolicyAccessByInstance($this, $action, $id));
             } else {
                 return (AdminController::checkPermissionAccess($this, $action) &&
