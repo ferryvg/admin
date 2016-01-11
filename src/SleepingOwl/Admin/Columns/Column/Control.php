@@ -139,7 +139,7 @@ class Control extends BaseColumn
      */
     protected function forceDeletable()
     {
-        return $this->trashed() && ! is_null($this->model()->forceDeletable($this->instance));
+        return ! is_null($this->model()->forceDeletable($this->instance));
     }
 
     /**
