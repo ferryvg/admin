@@ -14,9 +14,9 @@ class AdminAuthManager extends AuthManager {
 	 */
 	public function createEloquentDriver()
 	{
-		$provider = $this->createEloquentProvider();
+		$provider = $this->createEloquentProvider('');
 
-		return new Guard($provider, $this->app['session.store']);
+		return new Guard('eloquent', $provider, $this->app['session.store'], $this->app['request']);
 	}
 
 	/**
@@ -24,11 +24,19 @@ class AdminAuthManager extends AuthManager {
 	 *
 	 * @return \Illuminate\Auth\EloquentUserProvider
 	 */
-	protected function createEloquentProvider()
+	protected function createEloquentProvider($name)
 	{
 		$model = Config::get('admin.auth.model');
 
 		return new EloquentUserProvider($this->app['hash'], $model);
+	}
+
+	protected function getConfig($name)
+	{
+		return [
+			'driver' => $this->getDefaultDriver(),
+            'provider' => $this->getDefaultDriver(),
+		];
 	}
 
 	/**

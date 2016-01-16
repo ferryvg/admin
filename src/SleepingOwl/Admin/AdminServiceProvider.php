@@ -1,6 +1,7 @@
 <?php namespace SleepingOwl\Admin;
 
 use Illuminate\Support\ServiceProvider;
+use SleepingOwl\Admin\Templates\Facade\AdminTemplate;
 
 class AdminServiceProvider extends ServiceProvider
 {
@@ -85,6 +86,8 @@ class AdminServiceProvider extends ServiceProvider
 		{
 			return Admin::instance()->template();
 		});
+
+		class_alias(AdminTemplate::class, 'AdminTemplate');
 	}
 
 	/**

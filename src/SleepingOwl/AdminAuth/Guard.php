@@ -1,5 +1,8 @@
 <?php namespace SleepingOwl\AdminAuth;
 
-class Guard extends \Illuminate\Auth\Guard
+use Illuminate\Auth\RequestGuard;
+use Illuminate\Auth\SessionGuard;
+
+class Guard extends SessionGuard
 {
 }
