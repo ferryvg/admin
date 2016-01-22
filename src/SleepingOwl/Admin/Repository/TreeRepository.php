@@ -229,7 +229,7 @@ class TreeRepository extends BaseRepository
 		{
 			if (method_exists($instance, $method))
 			{
-				return $instance->$method();
+				return $instance->{$method}();
 			}
 		}
 		throw new \Exception('Tree type not supported');
@@ -289,7 +289,7 @@ class TreeRepository extends BaseRepository
 		$result = [];
 		foreach ($collection as $instance)
 		{
-			if ($instance->$parentField != $id) continue;
+			if ($instance->{$parentField} != $id) continue;
 
 			$instance->setRelation('children', $this->getChildren($collection, $instance->getKey()));
 			$result[] = $instance;

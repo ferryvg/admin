@@ -165,6 +165,7 @@ class AdminController extends Controller
 	{
 		$this->check_acl($model,'store');
 		$create = $model->create();
+
 		if (is_null($create))
 		{
 			abort(404);

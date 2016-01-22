@@ -220,7 +220,7 @@ class ModelCompiler
 	 */
 	protected function getRelation($column)
 	{
-		return $this->instance->$column();
+		return $this->instance->{$column}();
 	}
 
 	/**

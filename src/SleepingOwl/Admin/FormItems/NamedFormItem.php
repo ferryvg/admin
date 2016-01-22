@@ -1,5 +1,10 @@
 <?php namespace SleepingOwl\Admin\FormItems;
 
+use Dachnik\Models\Eloquent\Category;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Input;
 
 abstract class NamedFormItem extends BaseFormItem
@@ -102,19 +107,44 @@ abstract class NamedFormItem extends BaseFormItem
 	public function value()
 	{
 		$instance = $this->instance();
+
 		if ( ! is_null($value = old($this->path())))
 		{
 			return $value;
 		}
+
 		$input = Input::all();
+
 		if (($value = array_get($input, $this->path())) !== null)
 		{
 			return $value;
 		}
 
-		if ( ! is_null($instance) && ! is_null($value = $instance->getAttribute($this->attribute())))
+		if ( ! is_null($instance))
 		{
-			return $value;
+			$exploded = explode('.', $this->path());
+			$i = 1;
+			$count = count($exploded);
+
+			if (1 < $count) {
+				$i++;
+
+				foreach ($exploded as $relation) {
+					if ($instance->{$relation} instanceof Model) {
+						$instance = $instance->{$relation};
+					} elseif ($count === $i) {
+						$value = $instance->getAttribute($relation);
+					} else {
+						throw new \LogicException("Can not fetch value for field '{$this->path()}'. Probably relation definition is incorrect");
+					}
+				}
+			} else {
+				$value = $instance->getAttribute($this->attribute());
+			}
+
+			if (null !== $value) {
+				return $value;
+			}
 		}
 		return $this->defaultValue();
 	}
@@ -132,13 +162,59 @@ abstract class NamedFormItem extends BaseFormItem
 	public function save()
 	{
 		if ($this->save){
+			/** @var Category $instance */
+			$instance = $this->instance();
 			$attribute = $this->attribute();
-			if (Input::get($this->path()) === null) {
+
+			if (null === Input::get($this->path())) {
 				$value = null;
 			} else {
 				$value = $this->value();
 			}
-			$this->instance()->$attribute = $value;
+
+			$nested = explode('.', $this->path());
+			$count = count($nested);
+			$i = 1;
+
+			if (1 < $count) {
+				$i++;
+				$previousModel = $this->instance();
+
+				/** @var \Eloquent $model */
+				foreach ($nested as $model) {
+					$nestedModel = null;
+
+					if ($previousModel->{$model} instanceof  \Eloquent) {
+						$nestedModel = &$previousModel->{$model};
+					} elseif (method_exists($previousModel, $model)) {
+						/** @var Relation $relation */
+						$relation = $previousModel->{$model}();
+
+						switch (get_class($relation)) {
+							case BelongsTo::class:
+								$nestedModel = $relation->getRelated();
+								$relation->associate($nestedModel);
+								break;
+							case HasOne::class:
+								$nestedModel = $relation->create();
+								$instance->{$model} = $nestedModel;
+								break;
+						}
+					}
+
+					$previousModel = $nestedModel;
+
+					if ($i === $count) {
+						break;
+					} elseif (null === $nestedModel)  {
+						throw new \LogicException("Field «{$this->path()}» can't be mapped to relations of model " . get_class($this->instance()). ". Probably some dot delimeted segment is not a supported relation type");
+					}
+				}
+
+				$instance = $previousModel;
+			}
+
+			$instance->{$attribute} = $value;
 		}
 	}
 

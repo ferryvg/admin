@@ -6,7 +6,11 @@ use AdminTemplate;
 use Config;
 use Eloquent;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\View\View;
 use Input;
 use SleepingOwl\Admin\Admin;
@@ -204,6 +208,7 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 			return null;
 		}
 		$items = $this->items();
+
 		array_walk_recursive($items, function ($item)
 		{
 			if ($item instanceof FormItemInterface)
@@ -211,8 +216,14 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 				$item->save();
 			}
 		});
+
+		$this->saveBelongsToRelations();
+
 		$this->instance()->save();
+
+		$this->saveHasOneRelations();
 	}
+
 
 	/**
 	 * Validate data, returns null on success
@@ -262,6 +273,35 @@ class FormDefault implements Renderable, DisplayInterface, FormInterface
 			return $this->display_url($this->class);
 		}
 
+	}
+
+	protected function saveBelongsToRelations()
+	{
+		$relations = $this->instance()->getRelations();
+		$model = $this->instance();
+
+		foreach ($relations as $name => $relation) {
+			if ($model->{$name}() instanceof BelongsTo) {
+				$relation->save();
+				$model->{$name}()->associate($relation);
+			}
+		}
+	}
+
+	protected function saveHasOneRelations()
+	{
+		$relations = $this->instance()->getRelations();
+		$model = $this->instance();
+
+		foreach ($relations as $name => $relation) {
+			if ($model->{$name}() instanceof HasOneOrMany) {
+				if (is_array($relation)) {
+					$model->{$name}()->saveMany($relation);
+				} else {
+					$model->{$name}()->save($relation);
+				}
+			}
+		}
 	}
 
     /**

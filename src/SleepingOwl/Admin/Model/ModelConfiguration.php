@@ -120,6 +120,8 @@ class ModelConfiguration
      */
 	protected $acls_are_active = false;
 
+	protected $belongsTo = [];
+
 	/**
 	 * @param $class
      */
@@ -145,6 +147,18 @@ class ModelConfiguration
 	public function repository()
 	{
 		return new BaseRepository($this->class);
+	}
+
+	/**
+	 * @param array $relations Array of FQN classes of models which are ancestors of current model
+	 *
+	 * @return $this
+	 */
+	public function belongsTo($relations = [])
+	{
+		$this->belongsTo = $relations;
+
+		return $this;
 	}
 
 	/**
@@ -350,7 +364,7 @@ class ModelConfiguration
             }
             return $this->checkPermissionAndPolicies($id, 'create');
         }
-        $this->$creatable = $creatable;
+        $this->{$creatable} = $creatable;
         return $this;
     }
 
@@ -394,7 +408,7 @@ class ModelConfiguration
 			}
             return $this->checkPermissionAndPolicies($id, 'editContent');
         }
-		$this->$editableContent = $editableContent;
+		$this->{$editableContent} = $editableContent;
 		return $this;
 	}
 
