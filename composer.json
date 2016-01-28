@@ -1,5 +1,5 @@
 {
-	"name": "globalsdd/admin",
+	"name": "ferryvg/admin",
 	"description": "Aministrative interface builder for Laravel. Based on Sleeping Owl Admin",
 	"homepage": "http://sleeping-owl.github.io",
 	"keywords": [
@@ -17,6 +17,10 @@
 		{
                         "name": "Sergi Tur Badenas",  
                         "email": "sergiturbadenas@gmail.com"
+                },
+		{
+                        "name": "Evgeniy Belousov",  
+                        "email": "ferry.very@gmail.com"
                 }
 
 	],
